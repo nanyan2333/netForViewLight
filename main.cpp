@@ -4,7 +4,6 @@ int main()
 {
     int img_num;
     std::cin >> img_num;
-    for (int i = 1; i <= img_num; i++)
-        randomBin::createRandomBin("python ./src/randomBin/randomBin.py", i);
+    randomBin::createRandomBin("python ./src/randomBin/randomBin.py", img_num);
     return 0;
 }
