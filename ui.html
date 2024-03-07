@@ -59,13 +59,13 @@
 <body>
     <div class="container">
         <form>
-            <input type="text" placeholder="输入可执行文件名" id="file">
-            <input type="text" placeholder="输入二进制文件名" id="bin">
-            <input type="text" placeholder="输入生成视频名" id="video">
-            <input type="text" placeholder="视频时长" id="time">
+            <input type="text" placeholder="input exe" id="file">
+            <input type="text" placeholder="input bin" id="bin">
+            <input type="text" placeholder="input video" id="video">
+            <input type="text" placeholder="time" id="time">
             <div class="button-wrapper">
-                <button type="button" id="sub">Submit</button>
-                <button type="button" id="cancel">Cancel</button>
+                <button type="button" id="sub" onclick="sub_info()">Submit</button>
+                <button type="button" id="cancel" onclick="test()">Cancel</button>
             </div>
             <div class="text-wrapper">
                 <span id="output">111</span>
@@ -73,35 +73,69 @@
         </form>
     </div>
     <script>
-        const button = document.getElementById('sub');
-        button.addEventListener('click', () => {
-            console.log(111)
-            event.preventDefault()
-            const filename = document.getElementById('file').value;
-            const binname = document.getElementById('bin').value;
-            const videoname = document.getElementById('video').value;
-            const timelimit = document.getElementById('time').value;
-            const submitInfo = {
-                file: filename,
-                bin: binname,
-                video: videoname,
-                time: timelimit,
-            }
-            axios.post('http://localhost:3000/submit', submitInfo).then(res => {
-                console.log(222)
-                document.getElementById('output').innerText = res.data.result
-            }).catch(err => {
-                console.log(err)
-            });
-        });
+        async function test() {
+            const message = await window.pywebview.api.test();
+            document.getElementById('output').innerText = message;
+        }
+        async function sub_info() {
+            const message = await window.pywebview.api.run_exe();
+            document.getElementById('output').innerText = message;
+        }
 
-        document.getElementById('cancel').addEventListener('click', () => {
-            axios.post('http://localhost:3000/test').then(res => {
-                console.log(res)
-                document.getElementById('output').innerText = res.data.test
-            });
-        });
+        // const button = document.getElementById('sub');
+        // button.addEventListener('click', () => {
+        //     console.log(111)
+        //     event.preventDefault()
+        //     const filename = document.getElementById('file').value;
+        //     const binname = document.getElementById('bin').value;
+        //     const videoname = document.getElementById('video').value;
+        //     const timelimit = document.getElementById('time').value;
+        //     const submitInfo = {
+        //         file: filename,
+        //         bin: binname,
+        //         video: videoname,
+        //         time: timelimit,
+        //     }
+        //     axios.post('http://localhost:3000/submit', submitInfo).then(res => {
+        //         console.log(222)
+        //         document.getElementById('output').innerText = res.data.result
+        //     }).catch(err => {
+        //         console.log(err)
+        //     });
+        // });
+
+        // document.getElementById('cancel').addEventListener('click', () => {
+        //     axios.post('http://localhost:3000/test').then(res => {
+        //         console.log(res)
+        //         document.getElementById('output').innerText = res.data.test
+        //     });
+        // });
     </script>
 </body>
 
 </html>
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pywebview Example</title>
+</head>
+
+<body>
+    <h1>Hello, Pywebview!</h1>
+    <p>This is a simple desktop application using Pywebview.</p>
+    <button onclick="getMessageFromBackend()">Get Message</button>
+    <p id="message"></p>
+
+    <script>
+        async function getMessageFromBackend() {
+            const message = await window.pywebview.api.getMessage();
+            document.getElementById('message').innerText = message;
+        }
+    </script>
+
+</body>
+
+</html> -->
