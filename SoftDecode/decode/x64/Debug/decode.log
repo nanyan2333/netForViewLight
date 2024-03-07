@@ -1,0 +1,9 @@
+﻿  decodeVideo.cpp
+D:\ffmpeg-n6.1-latest-win64-lgpl-shared-6.1\include\libavutil\rational.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  (编译源文件“decodeVideo.cpp”)
+  
+D:\陈世薇\学习笔记\计算机网络\实验\项目一\decode\decodeVideo.cpp(44,62): warning C4244: “参数”: 从“double”转换到“size_t”，可能丢失数据
+D:\陈世薇\学习笔记\计算机网络\实验\项目一\decode\decodeVideo.cpp(81,16): warning C4018: “<”: 有符号/无符号不匹配
+D:\陈世薇\学习笔记\计算机网络\实验\项目一\decode\decodeVideo.cpp(58,8): warning C4101: “fp_yuv”: 未引用的局部变量
+D:\陈世薇\学习笔记\计算机网络\实验\项目一\decode\decodeVideo.cpp(124,6): warning C4101: “ret”: 未引用的局部变量
+  decode.vcxproj -> D:\陈世薇\学习笔记\计算机网络\实验\项目一\decode\x64\Debug\decode.exe
