@@ -1,4 +1,4 @@
-﻿#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
 #include <opencv2/core/core.hpp>  
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -8,6 +8,60 @@
 #include <fstream>
 using namespace cv;
 using namespace std;
+
+int check_out(char* in_bin_path, char* out_bin_path, char* vout_bin_path)
+{
+	std::ifstream file1(in_bin_path, std::ios::binary);
+	std::ifstream file2(out_bin_path, std::ios::binary);
+	std::ofstream diff_file(vout_bin_path, std::ios::binary);
+
+	if (!file1.is_open() || !file2.is_open() || !diff_file.is_open()) {
+		std::cerr << "Error opening files!" << std::endl;
+		return 1;
+	}
+
+	char byte1, byte2;
+	int num = 0;
+	while (file1.get(byte1) && file2.get(byte2)) 
+	{
+		uchar byte3 = ~((uchar)byte1 ^ (uchar)byte2);
+		uchar byte4 = byte3 & 0xf0;
+		byte4 >>= 4;
+		//高字节
+		byte4 &= 0x0f;
+		if (byte4 < 10) {
+			byte4 += '0';  // 0-9的字符表示
+		}
+		else {
+			byte4 += 'A' - 10;  // A-F的字符表示
+		}
+		diff_file.put(byte4);
+		//低字节
+		byte3 &= 0x0f;
+		if (byte3 < 10) {
+			byte3 += '0';  // 0-9的字符表示
+		}
+		else {
+			byte3 += 'A' - 10;  // A-F的字符表示
+		}
+		diff_file.put(byte3);
+		num = (++num) % 16;
+		if (num)
+		{
+			diff_file.put(' ');
+		}
+		else
+		{
+			diff_file.put('\n');
+		}
+	}
+
+	file1.close();
+	file2.close();
+	diff_file.close();
+
+	return 0;
+}
 
 int picture_to_bin(char* out_bin_path)
 {
@@ -87,12 +141,18 @@ void video_to_pictures(char* video_path)
 		imwrite(imageSaveName, frame);
 		//delete[] imageSaveName;
 		imgIndex++;
+
+		//waitKey(x);
+		//第一个参数： 等待x ms，如果在此期间有按键按下
+		// 则立即结束并返回按下按键的ASCII码
+		// 否则返回 - 1
+		// 如果x = 0，那么无限等待下去，直到有按键按下
 		if (waitKey(20) > 0)
 		{
 			break;
 		}
 		//选择抽取的图片帧数
-		if (imgIndex > 5)
+		if (imgIndex > 3)
 		{
 			break;
 		}
@@ -103,8 +163,13 @@ void video_to_pictures(char* video_path)
 int main()
 {
 	char video_path[] = "pikaqiu.mp4";
+	char in_bin_path[] = "in.bin";//需提前设置好内容
 	char out_bin_path[] = "out.bin";
+	char vout_bin_path[] = "vout.bin";
+
 	video_to_pictures(video_path);
 	picture_to_bin(out_bin_path);
+	check_out(in_bin_path, out_bin_path, vout_bin_path);
+
 	return 0;
 }
