@@ -4,7 +4,7 @@ class HuffmanNode:
         self.rchild = None
         self.parent = None
         self.weight = 0
-
+#
 def init_weight(p, weight, num_leaves):
     for i in range(num_leaves * 2 - 1):
         p[i].lchild = -1
