@@ -8,7 +8,7 @@ def video_to_pic(fileName: str, ):
     subprocess.run(["ffmpeg", "-i", f"./assets/video/{fileName}", "-vf", "fps=25", f"./assets/img/output_%04d.png", ])
 
 
-def QRCode_to_d0ata(img: list[np.ndarray]):
+def QRCode_to_data(img: list[np.ndarray]):
     data = ""
     page = -1
     for i in range(len(img)):
