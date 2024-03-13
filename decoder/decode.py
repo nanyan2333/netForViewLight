@@ -3,8 +3,7 @@ import cv2
 import numpy as np
 import subprocess
 
-
-def video_to_pic(fileName: str, ):
+def video_to_pic(fileName: str):
     subprocess.run(["ffmpeg", "-i", f"./assets/video/{fileName}", "-vf", "fps=25", f"./assets/img/output_%04d.png", ])
 
 
