@@ -7,4 +7,4 @@
 using namespace cv;
 using namespace std;
 
-void checkVout(char* in_bin_path, char* out_bin_path, char* vout_bin_path);
+void checkVout(char* incrc_bin_path, char* out_bin_path, char* vout_bin_path);
