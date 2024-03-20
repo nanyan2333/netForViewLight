@@ -1,6 +1,6 @@
 #include "check.h"
 
-void checkVout(char* in_bin_path, char* out_bin_path, char* vout_bin_path)
+void checkVout(char* incrc_bin_path, char* out_bin_path, char* vout_bin_path)
 {
 	std::ifstream file1(in_bin_path, std::ios::binary);
 	std::ifstream file2(out_bin_path, std::ios::binary);
