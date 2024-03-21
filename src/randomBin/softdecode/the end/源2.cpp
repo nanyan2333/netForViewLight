@@ -3,14 +3,14 @@
 
 void ReadBinFile(string& str, const string fileName) {
 	ifstream inFile;
-	inFile.open(fileName, ios::binary);//´ò¿ªÎÄ¼ş
+	inFile.open(fileName, ios::binary);//æ‰“å¼€æ–‡ä»¶
 
 	if (!inFile) {
 		cout << "Unable to open file!" << endl;
 		exit(0);
 	}
 
-	//¶ÁÈëÎÄ¼şÄÚÈİ
+	//è¯»å…¥æ–‡ä»¶å†…å®¹
 	stringstream sStream;
 	sStream << inFile.rdbuf();
 	str = sStream.str();
@@ -26,40 +26,41 @@ void DrawQRCode(string data1, vector<Mat>& img) {
 	while (true) {
 		Mat src(780, 780, CV_8UC3, Scalar(255, 255, 255));
 
-		//×óÉÏ¶¨Î»µã
+		//å·¦ä¸Šå®šä½ç‚¹
 		rectangle(src, Point(0, 0), Point(69, 69), Scalar(0, 0, 0), -1);
 		rectangle(src, Point(10, 10), Point(59, 59), Scalar(255, 255, 255), -1);
 		rectangle(src, Point(20, 20), Point(49, 49), Scalar(0, 0, 0), -1);
-		//ÓÒÉÏ¶¨Î»µã
+		//å³ä¸Šå®šä½ç‚¹
 		rectangle(src, Point(710, 0), Point(779, 69), Scalar(0, 0, 0), -1);
 		rectangle(src, Point(720, 10), Point(769, 59), Scalar(255, 255, 255), -1);
 		rectangle(src, Point(730, 20), Point(759, 49), Scalar(0, 0, 0), -1);
-		//×óÏÂ¶¨Î»µã
+		//å·¦ä¸‹å®šä½ç‚¹
 		rectangle(src, Point(0, 710), Point(69, 779), Scalar(0, 0, 0), -1);
 		rectangle(src, Point(10, 720), Point(59, 769), Scalar(255, 255, 255), -1);
 		rectangle(src, Point(20, 730), Point(49, 759), Scalar(0, 0, 0), -1);
 
-		//ÓÒÏÂ¸¨Öúµã
+		//å³ä¸‹è¾…åŠ©ç‚¹
 		rectangle(src, Point(690, 690), Point(739, 739), Scalar(0, 0, 0), -1);
 		rectangle(src, Point(700, 700), Point(729, 729), Scalar(255, 255, 255), -1);
 		rectangle(src, Point(710, 710), Point(719, 719), Scalar(0, 0, 0), -1);
 
 		int bits = 8;
 		int flag = 0;
-		//»æÖÆÊı¾İĞÅÏ¢²»Ê¹ÓÃ¸´ÔÓµÄ·½·¨,Ö±½Ó°´ĞĞÁĞµÄĞÎÊ½Ìî³ä
+		//ç»˜åˆ¶æ•°æ®ä¿¡æ¯ä¸ä½¿ç”¨å¤æ‚çš„æ–¹æ³•,ç›´æ¥æŒ‰è¡Œåˆ—çš„å½¢å¼å¡«å……
 		while (true) {
 			for (int col = 0; col < 78; col++) {
 				for (int row = 0; row < 78; row++) {
 					if (data.size() == key)
 					{
 						flag++;
-						data.push_back( '\0');
+						data.push_back('\0');
 						data.push_back('\0');
 					}
-					if (flag==2) {
+					if (flag == 2) {
 						Mat backGround(860, 860, CV_8UC3, Scalar(255, 255, 255));
 						Rect area(40, 40, 780, 780);
 						src.copyTo(backGround(area));
+						threshold(backGround, backGround, 127, 255, cv::THRESH_BINARY_INV);
 						img.push_back(backGround);
 						return;
 					}
@@ -87,6 +88,8 @@ void DrawQRCode(string data1, vector<Mat>& img) {
 			Mat backGround(860, 860, CV_8UC3, Scalar(255, 255, 255));
 			Rect area(40, 40, 780, 780);
 			src.copyTo(backGround(area));
+			threshold(backGround, backGround, 127, 255, cv::THRESH_BINARY_INV);
+			img.push_back(backGround);
 			img.push_back(backGround);
 		}
 	}
