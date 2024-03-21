@@ -1,18 +1,18 @@
 #include "parsingQRcodes.h"
 
-//½ÓÊÕÍ¼Ïñ×÷Îª²ÎÊı£¬·µ»ØÍ¼Ïñ×îĞ¡¾ØĞÎ¿ò
+//æ¥æ”¶å›¾åƒä½œä¸ºå‚æ•°ï¼Œè¿”å›å›¾åƒæœ€å°çŸ©å½¢æ¡†
 cv::Rect getMinRectBound(const cv::Mat& img) {
-    CV_Assert(img.type() == CV_8UC1);  // È·±£Í¼ÏñÊÇµ¥Í¨µÀ»Ò¶ÈÍ¼
+    CV_Assert(img.type() == CV_8UC1);  // ç¡®ä¿å›¾åƒæ˜¯å•é€šé“ç°åº¦å›¾
 
     bool key = false;
     int rows = img.rows, cols = img.cols;
-    cv::Point topRight(0, rows);//×îÉÏ±ß¡¢×îÓÒ±ß
-    cv::Point bottomLeft(cols, 0);//×î×ó±ß¡¢×îÏÂ±ß
+    cv::Point topRight(0, rows);//æœ€ä¸Šè¾¹ã€æœ€å³è¾¹
+    cv::Point bottomLeft(cols, 0);//æœ€å·¦è¾¹ã€æœ€ä¸‹è¾¹
 
     for (int i = 0; i < rows; ++i) {
         const uchar* row = img.ptr<uchar>(i);
         for (int j = 0; j < cols; ++j) {
-            if (row[j] == 0) {  // ºÚÉ«ÄÚÈİ£¬°×É«±³¾°
+            if (row[j] == 255) {  // é»‘è‰²èƒŒæ™¯ï¼Œç™½è‰²å†…å®¹
                 topRight.x = std::max(topRight.x, j);
                 topRight.y = std::min(topRight.y, i);
                 bottomLeft.x = std::min(bottomLeft.x, j);
@@ -22,30 +22,35 @@ cv::Rect getMinRectBound(const cv::Mat& img) {
     }
     return cv::Rect(bottomLeft.x, topRight.y, topRight.x - bottomLeft.x, bottomLeft.y - topRight.y);
 }
+int num = 0;
 
 void parsingQRcodes(Mat img, vector<Mat>& QRcodes) {
     cv::Mat gray;
-    //»Ò¶È»¯¡¢¶şÖµ»¯£º
+    //ç°åº¦åŒ–ã€äºŒå€¼åŒ–ï¼š
     cvtColor(img, gray, COLOR_BGR2GRAY);
     for (int i = 0; i < 3; i++) {
-        //¸ßË¹Ä£ºı,Ñ­»·ÔöÇ¿Æ½»¬Ğ§¹û
+        //é«˜æ–¯æ¨¡ç³Š,å¾ªç¯å¢å¼ºå¹³æ»‘æ•ˆæœ
         cv::GaussianBlur(gray, gray, Size(3, 3), 0);
     }
     threshold(gray, gray, 127, 255, THRESH_BINARY);
 
-    // »ñÈ¡×îĞ¡¾ØĞÎ±ß¿ò
+    // è·å–æœ€å°çŸ©å½¢è¾¹æ¡†
     cv::Rect rect = getMinRectBound(gray);
 
-    // ´´½¨Ò»¸öĞÂµÄ¿Õ°×»­²¼£¬´óĞ¡¿ÉÒÔ×Ô¶¨Òå  
-    cv::Mat qrcode = cv::Mat::zeros(cv::Size(rect.width, rect.height), CV_8UC1); // ´´½¨Ò»¸ö780x780´óĞ¡µÄ¿Õ°×»­²¼£¬1Í¨µÀ£¨»Ò¶ÈÍ¼£©  
+    // åˆ›å»ºä¸€ä¸ªæ–°çš„ç©ºç™½ç”»å¸ƒï¼Œå¤§å°å¯ä»¥è‡ªå®šä¹‰  
+    cv::Mat qrcode = cv::Mat::zeros(cv::Size(rect.width, rect.height), CV_8UC1); // åˆ›å»ºä¸€ä¸ª780x780å¤§å°çš„ç©ºç™½ç”»å¸ƒï¼Œ1é€šé“ï¼ˆç°åº¦å›¾ï¼‰  
 
-    // ÉèÖÃ½ØÈ¡ÇøÓòÔÚĞÂ»­²¼ÉÏµÄÎ»ÖÃ 
+    // è®¾ç½®æˆªå–åŒºåŸŸåœ¨æ–°ç”»å¸ƒä¸Šçš„ä½ç½® 
     cv::Rect roiInqrcode(0, 0, rect.width, rect.height);
 
-    // ½«Ô­Í¼µÄ½ØÈ¡ÇøÓò¸´ÖÆµ½ĞÂ»­²¼ÉÏ  
+    // å°†åŸå›¾çš„æˆªå–åŒºåŸŸå¤åˆ¶åˆ°æ–°ç”»å¸ƒä¸Š  
     gray(rect).copyTo(qrcode(roiInqrcode));
 
-    // ±£´æ½ØÈ¡µÄÇøÓò
+    threshold(qrcode, qrcode, 127, 255, cv::THRESH_BINARY_INV);
+    string filename = to_string(num++) + ".png";
+    cv::imwrite(filename, qrcode);
+
+    // ä¿å­˜æˆªå–çš„åŒºåŸŸ
     QRcodes.push_back(qrcode);
-    
+
 }
