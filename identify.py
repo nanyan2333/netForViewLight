@@ -15,8 +15,8 @@ def identify_qr_code(img, qr_codes: list[np.ndarray]):
     for _ in range(3):
         mid_img = cv2.GaussianBlur(mid_img, (3, 3), 0)     #对灰度图像进行高斯模糊处理
 
-    mid_img = cv2.threshold(mid_img, 127, 255, cv2.THRESH_BINARY)
-
+    _,mid_img = cv2.threshold(mid_img, 127, 255, cv2.THRESH_BINARY)
+    #cv2.imwrite(str(len(qr_codes))+".png",mid_img)
     contours, hierarchy = cv2.findContours(mid_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
 
     parent_index = -1
@@ -51,20 +51,23 @@ def identify_qr_code(img, qr_codes: list[np.ndarray]):
     if len(rect_points) < 4:
         return
 
-    P1 = [None] * 4
+    P1 = np.zeros((4, 2), dtype=np.float32)
     P1[3] = rect_points[min_rect_idx]
     rect_points.pop(min_rect_idx)
 
     angles = [
-        get_angle(rect_points[1] - rect_points[0], rect_points[2] - rect_points[0]),
-        get_angle(rect_points[0] - rect_points[1], rect_points[2] - rect_points[1]),
-        get_angle(rect_points[0] - rect_points[2], rect_points[1] - rect_points[2])
+        get_angle(np.array(rect_points[1]) - np.array(rect_points[0]),
+                  np.array(rect_points[2]) - np.array(rect_points[0])),
+        get_angle(np.array(rect_points[0]) - np.array(rect_points[1]),
+                  np.array(rect_points[2]) - np.array(rect_points[1])),
+        get_angle(np.array(rect_points[0]) - np.array(rect_points[2]),
+                  np.array(rect_points[1]) - np.array(rect_points[2]))
     ]
 
     mark = np.argmax(angles)
     P1[0] = rect_points[mark]
 
-    mid_point = ((rect_points[(mark + 1) % len(rect_points)] + rect_points[(mark + 2) % len(rect_points)]) / 2)
+    mid_point = ((np.array(rect_points[(mark + 1) % len(rect_points)]) + np.array(rect_points[(mark + 2) % len(rect_points)])) / 2)
     temp_vec1 = rect_points[(mark + 1) % len(rect_points)] - P1[0]
     temp_vec2 = rect_points[(mark + 2) % len(rect_points)] - P1[0]
     x1, y1 = temp_vec1 / np.linalg.norm(temp_vec1)

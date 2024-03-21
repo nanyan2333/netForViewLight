@@ -1,9 +1,11 @@
+import os
 import subprocess
+import sys
 
 import cv2
 import numpy as np
 # hhh
-import huffmanCode
+
 # 编码二维码
 
 def read_bin_file(file_name):
@@ -12,76 +14,6 @@ def read_bin_file(file_name):
         # print(data)
         # print(str(data))
     return data
-
-
-def encode(data: str, read: str):
-    num = 0
-    key = ""
-    for i in range(len(read)):
-        j = 0
-        while j < len(key):
-            if key[j] == read[i]:
-                break
-            j += 1
-        if j == len(key):
-            num += 1
-            key += read[i]
-
-    weight = [0 for _ in range(num * 2 - 1)]
-    for i in range(len(read)):
-        for k in range(len(key)):
-            if read[i] == key[k]:
-                weight[k] += 1
-                break
-
-    node = [huffmanCode.HuffmanNode() for _ in range(num * 2 - 1)]
-    # print(len(node),num)
-    codes = ["" for _ in range(num)]
-
-    huffmanCode.create_huffman(node, weight, num)
-    huffmanCode.huffman_code(node, num, codes)
-    # print(len(codes))
-    # for i in range(num):
-    #     print(f'{key[i]}   {codes[i]}')
-
-    for i in range(num):
-        ma = ord(key[i])
-        for _ in range(8):
-            if ma % 2 == 1:
-                data += '1'
-            else:
-                data += '0'
-            ma //= 2
-    data += "01111000"
-
-    for i in range(num):
-        w = weight[i]
-        for j in range(32):
-            if w % 2 == 1:
-                data += '1'
-            else:
-                data += '0'
-            w //= 2
-
-    for i in range(len(read)):
-        for j in range(len(key)):
-            if key[j] == read[i]:
-                data += codes[j]
-                break
-
-    len_of_data = len(data)
-    len_bin = ""
-    while len_of_data:
-        if len_of_data % 2 == 1:
-            len_bin += "1"
-        else:
-            len_bin += "0"
-        len_of_data //= 2
-
-    data = len_bin + "00000000" + data
-
-    return data  # 返回编码后的数据
-
 
 def draw_qr_code(data: str, img: list[np.ndarray]):
     key = 0
@@ -114,52 +46,42 @@ def draw_qr_code(data: str, img: list[np.ndarray]):
                     img.append(background)
                     return
                 if col < 8 and (row < 8 or row > 69) or (col > 69 and row < 8) or (
-                        67 < col < 75 and row > 67 or row < 75):
+                        67 < col < 75 and 67< row < 75):
                     continue
-                elif bits != 0:
-                    if number % 2 == 1:
-                        cv2.rectangle(src, (col * 10, row * 10), (col * 10 + 9, row * 10 + 9), (0, 0, 0), -1)
-                    else:
-                        cv2.rectangle(src, (col * 10, row * 10), (col * 10 + 9, row * 10 + 9), (255, 255, 255), -1)
-                    number //= 2  # 修正除法操作为整数除法
-                    bits -= 1
+
                 else:
                     if data[key] == '1':
                         cv2.rectangle(src, (col * 10, row * 10), (col * 10 + 9, row * 10 + 9), (0, 0, 0), -1)
                     else:
                         cv2.rectangle(src, (col * 10, row * 10), (col * 10 + 9, row * 10 + 9), (255, 255, 255), -1)
                     key += 1
-        cv2.imwrite('temp.png',src)
         background = np.full((860, 860, 3), (255, 255, 255), dtype=np.uint8)
         background[40:820, 40:820] = src
-        cv2.imwrite('temp2.png',background)
         img.append(background)
 
 
 
-def pic_to_video(img):
+def pic_to_video(img,frame_rate,output):
     for i, frame in enumerate(img):
         cv2.imwrite(f"./assets/img/frame_{i:04d}.png", frame)
     subprocess.run(
-        ["ffmpeg", "-framerate", "10", "-i", f"./assets/img/frame_%04d.png", "-c:v", "libx264", "-pix_fmt",
-         "yuv420p", "out.mp4"])
+        ["ffmpeg", "-framerate", f"{frame_rate}", "-i", f"./assets/img/frame_%04d.png", "-c:v", "libx264", "-pix_fmt",
+         "yuv420p", f"./assets/video/{output}"])
+    for i in range(len(img)):
+        os.remove(f"./assets/img/frame_{i:04d}.png")
 
 
 def main():
-    string = read_bin_file("in.bin")
-    data = ""
-    encoded_data = encode(data, str(string))  # 编码数据
-    print(encoded_data)
-    print(type(encoded_data))
+    filename,output,frame_rate=sys.argv[1],sys.argv[2],sys.argv[3]
+    string = read_bin_file(f"./assets/bin/{filename}")
+
     img = []
 
-    draw_qr_code(encoded_data, img)
+    draw_qr_code(str(string), img)
     print(len(img))
 
-    pic_to_video(img)
-
+    pic_to_video(img,frame_rate,output)
     # 保存视频
-    # pic_to_video(img, "output.mp4")
 
 
 if __name__ == "__main__":

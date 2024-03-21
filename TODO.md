@@ -1,26 +1,5 @@
-bin转mp4
-```  
-ffmpeg -f rawvideo -pix_fmt gray -s 640x480 -r 25 -i input.bin -c:v libx264 -preset slow -crf 22 -t 10 output.mp4  
-```
-
-得到参数
-```  
-int main(int argc, char* argv[])
-{
-    if (argc > 1) {
-        cout << "First command line argument: " << argv[1] << endl;
-    } else {
-        cout << "No command line arguments provided." << endl;
-    }
-    return 0;
-}  
-```
-
-todo清单：  
-1.bin转png或mp4   
-2.mp4解码，提高准确率  
-3.对比前后bin文件  
-
-
-问题：  
-你觉得提问题有用吗sb你看看你在说什么
+# 第二周周报
+c++ 实现了从视频中截取图片并解码成二进制文件，得到out.bin文件，并实现了码流的海明编解码  
+![img_1.png](img_1.png)![img_2.png](img_2.png)  
+python  利用哈夫曼编码来进行编码，利用cv2绘制二维码并生成了视频，实现了部分解码的逻辑，接下来是解析二维码
+![img_3.png](img_3.png)
