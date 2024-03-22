@@ -1,48 +1,33 @@
-#include<iostream>
-#include<fstream>
-#include<vector>
-using namespace std;
+#include"crc.h"
 unsigned int CRC;
 unsigned int CRC_32_Tbl[256];
-
 void GenCrc32Tbl()
 {
 	for (int i = 0; i < 256; i++) {
 		CRC = i;
-		for (int j = 0;j < 8;++j)
+		for (int j = 0; j < 8; ++j)
 		{
 			if (CRC & 1)
 				CRC = (CRC >> 1) ^ 0xEDB88320;
-			else 
+			else
 				CRC >>= 1;
 		}
 		CRC_32_Tbl[i] = CRC;
 	}
 }
-int main()
+void crc(string& end)
 {
-	ifstream fin;
-	fin.open("in.bin", ios::in|ios::binary);
-	ofstream fout("out.bin", ios::out | ios::binary);
-	if (!fin.is_open())
-	{
-		cout << "文件无法打开";
-		exit(1);
-	}
 	vector<unsigned char> fileData;
-	fin.seekg(0, std::ios::end);
-	fileData.resize(fin.tellg());
-	fin.seekg(0);
-	fin.read(reinterpret_cast<char*>(fileData.data()), fileData.size());
-	fin.close();
+	for (int i = 0; i < end.size(); i++)
+		fileData.push_back(end[i]);
 	GenCrc32Tbl();
-	unsigned char tmp[100] = { 0 };
-	string end;
+	end.clear();
+	unsigned char tmp[10] = { 0 };
 	for (int i = 0; i < fileData.size(); i++) {
-		if (i % 100 == 0&&i!=0)
+		if (i % 10 == 0 && i != 0)
 		{
 			unsigned int CRC32 = 0xffffffff; //设置初始值
-			for (int j = 0; j < 100; j++)
+			for (int j = 0; j < 10; j++)
 			{
 				end += tmp[j];
 				CRC32 = CRC_32_Tbl[(CRC32 ^ ((unsigned char*)tmp)[j]) & 0xff] ^ (CRC32 >> 8);
@@ -50,19 +35,19 @@ int main()
 			unsigned char t1;
 			t1 = (CRC32 & 0xff000000) >> 24;
 			end += t1;
-			t1= (CRC32 & 0xff0000) >> 16;
+			t1 = (CRC32 & 0xff0000) >> 16;
 			end += t1;
-			t1=(CRC32 & 0xff00) >> 8;
+			t1 = (CRC32 & 0xff00) >> 8;
 			end += t1;
-			t1= (CRC32 & 0xff);
+			t1 = (CRC32 & 0xff);
 			end += t1;
 
 		}
-		tmp[i % 100] = fileData[i];
+		tmp[i % 10] = fileData[i];
 		if (i == fileData.size() - 1)
 		{
 			unsigned int CRC32 = 0xffffffff; //设置初始值
-			for (int j = 0; j <= i%100; j++)
+			for (int j = 0; j <= i % 10; j++)
 			{
 				end += tmp[j];
 				CRC32 = CRC_32_Tbl[(CRC32 ^ ((unsigned char*)tmp)[j]) & 0xff] ^ (CRC32 >> 8);
@@ -78,7 +63,4 @@ int main()
 			end += t1;
 		}
 	}
-	fout << end;
-	fout.close();
-	return 0;
 }
