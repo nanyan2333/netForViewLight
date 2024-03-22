@@ -1,15 +1,15 @@
-#include "parsingQRcodes.h"
+#include "identifyQRcode.h"
 #include "encode.h"
 #include "decode.h"
-
+#include"crc.h"
+#include"decrc.h"
 int main()
 {
 	bool type = 0;
-
 	if (type) {
 		string str;
-		ReadBinFile(str, "in.bin");
-
+		ReadBinFile(str, "a.bin");
+		crc(str);
 
 		vector<Mat> img;
 		DrawQRCode(str, img);
@@ -17,17 +17,18 @@ int main()
 	}
 	else {
 		vector<Mat> video_img;
-		VideoToPic("out.mp4", video_img);
+		VideoToPic("in.mp4", video_img);
 
 		//Mat img = imread("test1.jpg");
 
 		vector<Mat> QRcode;
 		for (int i = 0; i < video_img.size(); i++) {
-			parsingQRcodes(video_img[i], QRcode);
+			IdentifyQRcode(video_img[i], QRcode);
 		}
 
 		string video_data;
 		QRCodeToData(QRcode, video_data);
+		decrc(video_data);
 		WriteBinFile(video_data, "out.bin");
 	}
 
