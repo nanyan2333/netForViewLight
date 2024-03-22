@@ -1,5 +1,5 @@
 ﻿#include "decode.h"
-#include "huffman.h"
+
 void VideoToPic(const string fileName, vector<Mat>& img) {
 	VideoCapture video(fileName);
 	int frame_num = video.get(CAP_PROP_FRAME_COUNT);
