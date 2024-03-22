@@ -1,5 +1,4 @@
 #include "encode.h"
-#include "huffman.h"
 
 void ReadBinFile(string& str, const string fileName) {
 	ifstream inFile;
@@ -60,7 +59,6 @@ void DrawQRCode(string data1, vector<Mat>& img) {
 						Mat backGround(860, 860, CV_8UC3, Scalar(255, 255, 255));
 						Rect area(40, 40, 780, 780);
 						src.copyTo(backGround(area));
-						threshold(backGround, backGround, 127, 255, cv::THRESH_BINARY_INV);
 						img.push_back(backGround);
 						return;
 					}
@@ -88,8 +86,6 @@ void DrawQRCode(string data1, vector<Mat>& img) {
 			Mat backGround(860, 860, CV_8UC3, Scalar(255, 255, 255));
 			Rect area(40, 40, 780, 780);
 			src.copyTo(backGround(area));
-			threshold(backGround, backGround, 127, 255, cv::THRESH_BINARY_INV);
-			img.push_back(backGround);
 			img.push_back(backGround);
 		}
 	}
@@ -102,7 +98,7 @@ void DrawQRCode(string data1, vector<Mat>& img) {
 }
 
 void PicToVideo(vector<Mat>& img, const string fileName) {
-	int frame_rate = 10;
+	int frame_rate = 4;
 	VideoWriter video(fileName, VideoWriter::fourcc('m', 'p', '4', 'v'), frame_rate, Size(860, 860));
 
 	for (int i = 0; i < img.size(); i++) {
