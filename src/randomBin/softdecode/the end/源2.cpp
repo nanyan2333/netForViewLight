@@ -45,8 +45,12 @@ void DrawQRCode(string data1, vector<Mat>& img) {
 
 		int bits = 8;
 		int flag = 0;
+		int page = 0;
+		int real_page = 0;
 		//绘制数据信息不使用复杂的方法,直接按行列的形式填充
 		while (true) {
+			real_page++;
+			page = real_page;
 			for (int col = 0; col < 78; col++) {
 				for (int row = 0; row < 78; row++) {
 					if (data.size() == key)
@@ -64,6 +68,15 @@ void DrawQRCode(string data1, vector<Mat>& img) {
 					}
 					if ((col < 8 && (row < 8 || row > 69)) || (col > 69 && row < 8) || (col > 67 && col < 75 && row>67 && row < 75)) {
 						continue;
+					}
+					else if (col == 0 && row < 16) {
+						if (page % 2 == 1) {
+							rectangle(src, Point(col * 10, row * 10), Point(col * 10 + 9, row * 10 + 9), Scalar(0, 0, 0), -1);
+						}
+						else {
+							rectangle(src, Point(col * 10, row * 10), Point(col * 10 + 9, row * 10 + 9), Scalar(255, 255, 255), -1);
+						}
+						page /= 2;
 					}
 					else {
 						if (data.at(key) % 2 == 1) {
@@ -98,7 +111,7 @@ void DrawQRCode(string data1, vector<Mat>& img) {
 }
 
 void PicToVideo(vector<Mat>& img, const string fileName) {
-	int frame_rate = 4;
+	int frame_rate = 10;
 	VideoWriter video(fileName, VideoWriter::fourcc('m', 'p', '4', 'v'), frame_rate, Size(860, 860));
 
 	for (int i = 0; i < img.size(); i++) {
