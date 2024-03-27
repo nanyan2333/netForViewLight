@@ -7,7 +7,7 @@
 
 int main(int argc, char* argv[])
 {
-	bool type = true;
+	bool type = false;
 	if (argc != 4)
 	{
 		return 0;
@@ -30,7 +30,6 @@ int main(int argc, char* argv[])
 		string str;
 		ReadBinFile(str, argv[1]);
 		crc(str);
-		WriteBinFile(str, "incrc.bin");
 
 		vector<Mat> img;
 		DrawQRCode(str, img);
@@ -45,15 +44,11 @@ int main(int argc, char* argv[])
 			IdentifyQRcode(video_img[i], QRcode);
 		}
 
-		string str;
-		ReadBinFile(str, "incrc.bin");
-		decrc(str);
-		WriteBinFile(str, "checkout.bin");
 		string video_data;
 		QRCodeToData(QRcode, video_data);
 		decrc(video_data);
 		WriteBinFile(video_data, argv[2]);
-		checkVout("checkout.bin", argv[2], argv[3]);
+		checkVout(argv[2], argv[3]);
 	}
 
 	return 0;
