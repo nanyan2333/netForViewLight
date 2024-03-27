@@ -7,4 +7,4 @@
 using namespace cv;
 using namespace std;
 
-void checkVout(const string in_bin_path, const string out_bin_path, const string vout_bin_path);
+void checkVout(const string out_bin_path, const string vout_bin_path);
