@@ -3,6 +3,7 @@
 #include "decode.h"
 #include "crc.h"
 #include "decrc.h"
+#include "check.h"
 
 int main(int argc, char* argv[])
 {
