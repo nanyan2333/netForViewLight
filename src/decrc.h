@@ -3,4 +3,4 @@
 #include<fstream>
 #include<vector>
 using namespace std;
-void decrc(string& end, const string vout_bin);
+void decrc(string& end);
