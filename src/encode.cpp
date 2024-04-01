@@ -16,9 +16,15 @@ void ReadBinFile(string& str, const string fileName) {
 	//cout << str << endl;
 }
 
+int en = 0;
 
-void DrawQRCode(string data1, vector<Mat>& img) {
+void DrawQRCode(string data1, vector<Mat>& img, const string limitTime) {
+	int frame_rate = 10;
+	double target_duration_seconds = stoi(limitTime) * 1.0 / 1000;
+	// 计算最大帧数（向上取整）  
+	int target_frames = static_cast<int>(std::ceil(target_duration_seconds * frame_rate));
 	int key = 0;
+	int num = 0;
 	vector<uchar>data;
 	for (int i = 0; i < data1.size(); i++)
 		data.push_back(data1[i]);
@@ -63,6 +69,12 @@ void DrawQRCode(string data1, vector<Mat>& img) {
 						Mat backGround(860, 860, CV_8UC3, Scalar(255, 255, 255));
 						Rect area(40, 40, 780, 780);
 						src.copyTo(backGround(area));
+						//imwrite(to_string(en++) + ".png", backGround);
+						num++;
+						if (num > target_frames)
+						{
+							return;
+						}
 						img.push_back(backGround);
 						return;
 					}
@@ -99,6 +111,12 @@ void DrawQRCode(string data1, vector<Mat>& img) {
 			Mat backGround(860, 860, CV_8UC3, Scalar(255, 255, 255));
 			Rect area(40, 40, 780, 780);
 			src.copyTo(backGround(area));
+			//imwrite(to_string(en++) + ".png", backGround);
+			num++;
+			if (num > target_frames)
+			{
+				return;
+			}
 			img.push_back(backGround);
 		}
 	}
