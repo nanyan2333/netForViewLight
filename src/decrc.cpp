@@ -1,7 +1,7 @@
 #include "decrc.h"
 #include"crc.h"
 
-void decrc(string& end, const string vout_bin)
+void decrc(string& end)
 {
 	int o = 0;
 	vector<unsigned char> fileData;
@@ -70,11 +70,4 @@ void decrc(string& end, const string vout_bin)
 				}
 		}
 	}
-	std::ofstream diff_file(vout_bin, std::ios::binary);
-	if (!diff_file.is_open()) {
-		std::cerr << "Error opening files!" << std::endl;
-		return;
-	}
-	diff_file << pau;
-	diff_file.close();
 }
