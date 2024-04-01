@@ -9,6 +9,6 @@ using namespace std;
 
 void ReadBinFile(string& str, const string fileName);
 
-void DrawQRCode(string code, vector<Mat>& img);
+void DrawQRCode(string code, vector<Mat>& img, const string fileName);
 
 void PicToVideo(vector<Mat>& img, const string fileName, const string limitTime);
