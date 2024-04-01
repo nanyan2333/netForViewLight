@@ -45,8 +45,9 @@ int main(int argc, char* argv[])
 
 		string video_data;
 		QRCodeToData(QRcode, video_data);
-		decrc(video_data,argv[3]);
+		decrc(video_data);
 		WriteBinFile(video_data, argv[2]);
+		checkVout(argv[2], argv[3]);
 	}
 
 	return 0;
