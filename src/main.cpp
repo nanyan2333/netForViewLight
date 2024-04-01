@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
 		crc(str);
 
 		vector<Mat> img;
-		DrawQRCode(str, img);
+		DrawQRCode(str, img，argv[3]);
 		PicToVideo(img, argv[2], argv[3]);
 	}
 	else {
