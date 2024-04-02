@@ -3,7 +3,6 @@
 #include "decode.h"
 #include "crc.h"
 #include "decrc.h"
-#include "check.h"
 
 int main(int argc, char* argv[])
 {
@@ -46,9 +45,8 @@ int main(int argc, char* argv[])
 
 		string video_data;
 		QRCodeToData(QRcode, video_data);
-		decrc(video_data);
+		decrc(video_data, argv[3]);
 		WriteBinFile(video_data, argv[2]);
-		checkVout(argv[2], argv[3]);
 	}
 
 	return 0;
