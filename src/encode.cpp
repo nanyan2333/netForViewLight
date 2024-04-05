@@ -78,7 +78,7 @@ void DrawQRCode(string data1, vector<Mat>& img, const string limitTime) {
 						img.push_back(backGround);
 						return;
 					}
-					if ((col < 8 && (row < 8 || row > 69)) || (col > 69 && row < 8) || (col > 67 && col < 75 && row>67 && row < 75)) {
+					if ((col < 8 && (row < 8 || row > 69)) || (col > 69 && row < 8) || (col > 67 && col < 75 && row>67 && row < 75)||(col==77&&row>66)) {
 						continue;
 					}
 					else if (col == 0 && row < 16) {
@@ -128,16 +128,11 @@ void DrawQRCode(string data1, vector<Mat>& img, const string limitTime) {
 	//waitKey(0);
 }
 
-void PicToVideo(vector<Mat>& img, const string fileName, const string limitTime) {
+void PicToVideo(vector<Mat>& img, const string fileName) {
 	int frame_rate = 10;
-	double target_duration_seconds = stoi(limitTime) * 1.0 / 1000;
-	// 计算最大帧数（向上取整）  
-	int target_frames = static_cast<int>(std::ceil(target_duration_seconds * frame_rate));
 	VideoWriter video(fileName, VideoWriter::fourcc('m', 'p', '4', 'v'), frame_rate, Size(860, 860));
 
-	for (int i = 0; i < img.size(); i++) {
-		if (i > target_frames)
-			break;
+	for (int i = 0; i < img.size(); i++){
 		Mat image = img[i].clone();
 		video << image;
 	}
