@@ -1,4 +1,4 @@
-#include"decode.h"
+#include "decode.h"
 void VideoToPic(const string fileName, vector<Mat>& img) {
 	VideoCapture video(fileName);
 	int frame_num = video.get(CAP_PROP_FRAME_COUNT);
@@ -23,14 +23,14 @@ void QRCodeToData(vector<Mat>& img, string& data) {
 	int key = 0;
 	int page[1000] = { 0 };
 	int tmp = 0;
-	int flag = 0;
 	string ta[1000];
+	int flag = 0;
 	for (int i = 0; i < img.size(); i++) {
-		for (int col = 0; col < 78; col++) {
-			for (int row = 0; row < 78; row++) {
+		for (int col = 0; col < 144; col++) {
+			for (int row = 0; row < 144; row++) {
 				if (col == 0 && row == 16)
 				{
-					if (page[tmp] != 0||tmp==0)
+					if (page[tmp] != 0 || tmp == 0)
 					{
 						flag = 1;
 						tmp = 0;
@@ -41,10 +41,12 @@ void QRCodeToData(vector<Mat>& img, string& data) {
 						page[tmp]++;
 					count1 = 0;
 				}
-				if ((col < 8 && (row < 8 || row > 69)) || (col > 69 && row < 8)
-					|| (col > 67 && col < 75 && row>67 && row < 75)||(col==77&&row>66) ){
+				if ((col < 8 && (row < 8 || row > 135)) || (col > 135 && row < 8)
+					|| (col > 123 && col < 141 && row>123 && row < 141)) {
 					continue;
 				}
+				else if (col == 143 && row > 56)
+					continue;
 				else if (col == 0 && row >= 8 && row < 16) {
 					Scalar color = img[i].at<uchar>(Point(col * 10 + 5, row * 10 + 5));
 					if (color[0] < 128)
@@ -77,19 +79,19 @@ void QRCodeToData(vector<Mat>& img, string& data) {
 		tmp = 0;
 		key = 0;
 	}
-	for (int i = 1; i < img.size(); i++)
-	{
-		if (ta[i].empty())
-			for (int j = 0; j < 728; j++)
-			{
-				if (j % 13 == 0&&j!=0)
-					data += 1;
-				else
-					data += '\0';
-			}
-		else
-			data += ta[i];
-	}
+		for (int i = 1; i < img.size(); i++)
+		{
+			if (ta[i].empty())
+				for (int j = 0; j < 2520; j++)
+				{
+					if (j % 13 == 0 && j != 0)
+						data += 1;
+					else
+						data += '\0';
+				}
+			else
+				data += ta[i];
+		}
 }
 void WriteBinFile(string& str, const string fileName) {
 	ofstream outFile;
